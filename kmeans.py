@@ -15,7 +15,7 @@ kmeans steps:
 6. repeat steps 3 to 5 until convergence
 """
 
-def kmeans(dset, k=3, tol=1e-4):
+def kmeans(dset, k=3, init='random', gen_steps=False, tol=1e-4):
     '''
     K-means implementationd for a 
     `dset`:  DataFrame with observations
@@ -29,7 +29,7 @@ def kmeans(dset, k=3, tol=1e-4):
     j = 0
     
     # Step 2
-    centroids = initiate_centroids(k, dset)
+    centroids = initiate_centroids(k, dset, init)
 
     while(goahead):
         # Step 3 and 4
@@ -46,12 +46,14 @@ def kmeans(dset, k=3, tol=1e-4):
                 goahead = False
         j+=1
 
+        if gen_steps: gen_plot(working_dset, centroids)
+
     working_dset['centroid'], j_err = centroid_assignment(working_dset, centroids)
     centroids = working_dset.groupby('centroid').agg('mean').reset_index(drop = True)
     gen_plot(working_dset, centroids)
     return working_dset['centroid'], j_err, centroids
 
-def initiate_centroids(k, dset):
+def initiate_centroids(k, dset, init):
     '''
     Select k data points as centroids
     k: number of centroids
@@ -112,4 +114,6 @@ def gen_plot(df, centroids):
 
 blobs = pd.read_csv('kmeans_blobs.csv')
 colnames = list(blobs.columns[1:-1])
-kmeans(blobs[colnames], k=10)
+kmeans(blobs[colnames], k=4, gen_steps=True)
+
+# sorry, I did not have time to finish the interactive webpage, this kmeans implementation is as far as I got :(
