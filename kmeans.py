@@ -22,28 +22,26 @@ def kmeans(dset, k=3, tol=1e-4):
     `k`: number of clusters, default k=2
     `tol`: tolerance=1E-4
     '''
-    # Let us work in a copy, so we don't mess the original
+
     working_dset = dset.copy()
-    # We define some variables to hold the error, the 
-    # stopping signal and a counter for the iterations
     err = []
     goahead = True
     j = 0
     
-    # Step 2: Initiate clusters by defining centroids 
+    # Step 2
     centroids = initiate_centroids(k, dset)
 
     while(goahead):
-        # Step 3 and 4 - Assign centroids and calculate error
+        # Step 3 and 4
         working_dset['centroid'], j_err = centroid_assignment(working_dset, centroids) 
         err.append(sum(j_err))
         
-        # Step 5 - Update centroid position
+        # Step 5
         centroids = working_dset.groupby('centroid').agg('mean').reset_index(drop = True)
 
-        # Step 6 - Restart the iteration
+        # Step 6
         if j>0:
-            # Is the error less than a tolerance (1E-4)
+            # Is the error less than a tolerance
             if err[j-1]-err[j]<=tol:
                 goahead = False
         j+=1
